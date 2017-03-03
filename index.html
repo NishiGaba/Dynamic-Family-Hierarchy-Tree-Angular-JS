@@ -3,14 +3,15 @@
 <head>
 	<title>Dynamic Family Hierarchy Tree</title>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
-	<script type="text/javascript" src="js/tree.js"></script>
+	<script type="text/javascript" src="js/lib/angular.min.js"></script>
+  	<script type="text/javascript" src="js/app.js"></script>
 </head>
-<body>
+<body ng-app="myApp" ng-controller="hierarchyController">
 	<!--  The Hierarchical Structure will be simple Nested Lists  -->
-	<div class="tree" id="tree">
+	<div id="tree">
 		<ul>
 			<li>
-				<a href="#">Parent</a>
+				<a href="#" id="parent" ng-click="createChild($event)">Parent</a>
 				<ul>
 					<li>
 						<a href="#">Child</a>
