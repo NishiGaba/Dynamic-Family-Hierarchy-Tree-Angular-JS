@@ -8,7 +8,7 @@ myApp.controller('hierarchyController', ['$scope',function($scope) {
 		{
 			id		: 	'Head_Office',
 			parent	:	'null',
-			level	: 	 0
+			level 	:    0
 		}
 	];
 
@@ -37,7 +37,8 @@ myApp.controller('hierarchyController', ['$scope',function($scope) {
 			document.getElementById(array[0].parent).innerHTML = '<a href="#">'+array[0].parent+'</a><ul id="'+array[0].parent+'UL"></ul>';
 			
 			for(i=0; i<array.length; i++) {
-				document.getElementById(array[0].parent+'UL').appendChild(document.createElement("li")).innerHTML = '<a href="#">'+array[i].id+'</a>';
+				document.getElementById(array[0].parent+'UL').appendChild(document.createElement("li")).setAttribute("id",array[i].id);
+				document.getElementById(array[i].id).innerHTML = '<a href="#">'+array[i].id+'</a>';
 			}			
 		}
 	}
@@ -47,15 +48,16 @@ myApp.controller('hierarchyController', ['$scope',function($scope) {
 
 	//Function to Add Nodes to the treeElements Array
 	$scope.addNode = function(node){
-		// if(node.parent == 'Head_Office') {
+
 			var element = {
 				id 		: node.name,
 				parent 	: node.parent,
 				level 	: 1
 			}
-		// }
+		
 		treeElements.push(element);
-		// console.log(treeElements);
+		
+		//Call getHierarchy Function to Update Hierarchy Tree
 		getHierarchy();
 	};
 
@@ -67,18 +69,39 @@ myApp.controller('hierarchyController', ['$scope',function($scope) {
 		
 
 		//Loop to check parent of Elements inside the treeElements Array
-		for(i=0;i<treeElements.length;i++) {
+		for(i=0; i<treeElements.length; i++) {
 			
 			if(treeElements[i].parent == 'null' && treeElements[i].level == 0) {
-				
+
 				//Parent Node is Created Dynamically
 				document.getElementById('hierarchyContainer').innerHTML = '<li id='+treeElements[i].id+'><a href="#">'+treeElements[i].id+'</a></li>';
 				
-				//Find Child Nodes of this Parent Node and Store them in childNodeArray
-				var childNodeArray = findChildNodes(treeElements[i],treeElements);
+				//Find Child Nodes of this Parent Node and Store them in childNodeArray Level1
+				var childNodeArray1 = findChildNodes(treeElements[i],treeElements);
 
 				//Call createList Function with childNodeArray
-				createList(childNodeArray);
+				createList(childNodeArray1);
+
+				childNodeArray1.forEach(function(item) {
+				    var childNodeArray2 = findChildNodes(item,treeElements);
+				    createList(childNodeArray2);
+
+				    childNodeArray2.forEach(function(item) {
+						var childNodeArray3 = findChildNodes(item,treeElements);
+					    createList(childNodeArray3);
+
+				    	childNodeArray3.forEach(function(item) {
+							var childNodeArray4 = findChildNodes(item,treeElements);
+						    createList(childNodeArray4);
+
+						    childNodeArray4.forEach(function(item) {
+								var childNodeArray5 = findChildNodes(item,treeElements);
+							    createList(childNodeArray5);
+							});
+						});
+					});
+				});
+
 			}
 
 		}
