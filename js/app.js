@@ -2,7 +2,8 @@ var myApp = angular.module('myApp', []);
 
 myApp.controller('hierarchyController', ['$scope',function($scope) {
 
-	// Array Containing Family Hierarchy Tree Nodes
+
+	// Globally Decalared Array Containing Family Hierarchy Tree Nodes (Initially Containing Parent Node )
 	var treeElements = [
 		{
 			id		: 	'Head_Office',
@@ -10,6 +11,39 @@ myApp.controller('hierarchyController', ['$scope',function($scope) {
 			level	: 	 0
 		}
 	];
+
+
+
+	//Find Child Nodes of the Parent Node
+	var findChildNodes = function(parent,array) {
+
+		//Create an Empty Child Nodes Array
+		var childNodes = [];
+
+		//Loop through the length of Array
+		for(i=0; i<array.length; i++) {
+			if(array[i].parent == parent.id) {
+				childNodes.push(array[i]);
+			}
+		}
+		return childNodes;
+	}
+
+
+
+	//Function to Create Leveled Unordered List of Child Nodes Having Same Parent
+	var createList = function(array) {
+		if(array.length > 0) {
+			document.getElementById(array[0].parent).innerHTML = '<a href="#">'+array[0].parent+'</a><ul id="'+array[0].parent+'UL"></ul>';
+			
+			for(i=0; i<array.length; i++) {
+				document.getElementById(array[0].parent+'UL').appendChild(document.createElement("li")).innerHTML = '<a href="#">'+array[i].id+'</a>';
+			}			
+		}
+	}
+
+
+
 
 	//Function to Add Nodes to the treeElements Array
 	$scope.addNode = function(node){
@@ -21,41 +55,39 @@ myApp.controller('hierarchyController', ['$scope',function($scope) {
 			}
 		// }
 		treeElements.push(element);
-		console.log(treeElements);
+		// console.log(treeElements);
 		getHierarchy();
 	};
 
+
+
+
 	//Function to Make A Family Hierarchy Tree
 	var getHierarchy = function() {
+		
 
 		//Loop to check parent of Elements inside the treeElements Array
 		for(i=0;i<treeElements.length;i++) {
-			console.log(treeElements.length);
+			
 			if(treeElements[i].parent == 'null' && treeElements[i].level == 0) {
+				
 				//Parent Node is Created Dynamically
 				document.getElementById('hierarchyContainer').innerHTML = '<li id='+treeElements[i].id+'><a href="#">'+treeElements[i].id+'</a></li>';
-				// delete treeElements[i];
-				console.log(treeElements.length);
+				
+				//Find Child Nodes of this Parent Node and Store them in childNodeArray
+				var childNodeArray = findChildNodes(treeElements[i],treeElements);
 
-				for(j=0;j<treeElements.length;j++) {
-					if(treeElements[i].id == treeElements[j].parent) {
-						console.log('Matched');
-						document.getElementById(treeElements[i].id).innerHTML = '<a href="#">'+treeElements[i].id+'</a><ul><li id='+treeElements[j].id+'><a href="#">'+treeElements[j].id+'</a></li></ul>';
-					
-						if(treeElements.length == 3) {
-							for(k=0;k<treeElements.length;k++) {
-								console.log(treeElements[j].id + "         "+ treeElements[k].parent);
-								if(treeElements[j].id == treeElements[k].parent) {
-									document.getElementById(treeElements[j].id).innerHTML = '<a href="#">'+treeElements[j].id+'</a><ul><li><a href="#">'+treeElements[k].id+'</a></li></ul>'
-								}
-							}
-						}
-					}
-				}
+				//Call createList Function with childNodeArray
+				createList(childNodeArray);
 			}
+
 		}
+
 	}
+
 
 	//Bydefault Call to Get Family Hierarchy Tree
 	getHierarchy();
-}])
+
+
+}]);
