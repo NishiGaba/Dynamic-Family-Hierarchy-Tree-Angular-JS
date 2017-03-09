@@ -13,7 +13,6 @@ myApp.controller('hierarchyController', ['$scope',function($scope) {
 	];
 
 
-
 	//Find Child Nodes of the Parent Node
 	var findChildNodes = function(parent,array) {
 
@@ -38,6 +37,7 @@ myApp.controller('hierarchyController', ['$scope',function($scope) {
 			
 			for(i=0; i<array.length; i++) {
 				document.getElementById(array[0].parent+'UL').appendChild(document.createElement("li")).setAttribute("id",array[i].id);
+				document.getElementById(array[i].id).className = "listNode";
 				document.getElementById(array[i].id).innerHTML = '<a href="#">'+array[i].id+'</a>';
 			}			
 		}
@@ -75,7 +75,7 @@ myApp.controller('hierarchyController', ['$scope',function($scope) {
 
 				//Parent Node is Created Dynamically
 				document.getElementById('hierarchyContainer').innerHTML = '<li id='+treeElements[i].id+'><a href="#">'+treeElements[i].id+'</a></li>';
-				
+				document.getElementById(treeElements[i].id).className = "listNode";
 				//Find Child Nodes of this Parent Node and Store them in childNodeArray Level1
 				var childNodeArray1 = findChildNodes(treeElements[i],treeElements);
 
@@ -105,6 +105,21 @@ myApp.controller('hierarchyController', ['$scope',function($scope) {
 			}
 
 		}
+
+
+		//Click on Node to Delete that List Item
+		var el = document.querySelector(".listNode");
+		el.onclick = function(event) {
+			var deleteNode = event.target.parentElement.id;
+
+			for(i=0;i<treeElements.length;i++) {
+				if(deleteNode == treeElements[i].id) {
+					treeElements.splice(i,1);
+					getHierarchy();
+				}
+			}
+        }
+        
 
 	}
 
